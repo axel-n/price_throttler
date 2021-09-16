@@ -30,7 +30,7 @@ public class ExchangeMock {
                 double price = RandomNumberHelper.getRandomDouble();
 
                 if (counter % 100 == 0) {
-                    logger.info("counter={}", counter);
+                    logger.info("sent count={} prices", counter);
                 }
 
                 priceThrottler.onPrice(ccyPair, price);
@@ -47,8 +47,7 @@ public class ExchangeMock {
     }
 
     private String randomPair() {
-//        int indexPair = RandomNumberHelper.randomInt(countPairs - 1);
-//        return CurrencyPair.values()[indexPair].name();
-        return EUR_USD.name();
+        int indexPair = RandomNumberHelper.randomInt(countPairs - 1);
+        return CurrencyPair.values()[indexPair].name();
     }
 }
