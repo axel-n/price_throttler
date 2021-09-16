@@ -1,7 +1,7 @@
 package com.price.processor.client;
 
 import com.price.processor.common.PriceProcessor;
-import com.price.processor.PriceThrottler;
+import com.price.processor.throttler.PriceThrottler;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

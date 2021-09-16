@@ -1,10 +1,9 @@
 package com.price.processor.starter;
 
-import com.price.processor.PriceThrottler;
+import com.price.processor.throttler.PriceThrottler;
 import com.price.processor.client.Client;
 import com.price.processor.client.ClientFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main {

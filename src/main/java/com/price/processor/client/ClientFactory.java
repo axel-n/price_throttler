@@ -1,6 +1,6 @@
 package com.price.processor.client;
 
-import com.price.processor.PriceThrottler;
+import com.price.processor.throttler.PriceThrottler;
 import com.price.processor.helper.RandomNumberHelper;
 import lombok.AllArgsConstructor;
 

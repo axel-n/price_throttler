@@ -1,23 +1,24 @@
-package com.price.processor;
+package com.price.processor.throttler;
 
 import com.price.processor.common.PriceProcessor;
 import lombok.AllArgsConstructor;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @AllArgsConstructor
 public class PriceThrottler implements PriceProcessor {
 
-    private final LinkedList<PriceProcessor> listSubscribers = new LinkedList<>();
+    private final List<PriceProcessor> listSubscribers = new LinkedList<>();
+    private final ExecutorService executor = Executors.newCachedThreadPool();
 
     @Override
     public void onPrice(String ccyPair, double rate) {
         System.out.println("PriceThrottler. ccyPair=" + ccyPair + "rate=" + rate);
 
-        listSubscribers
-                .stream()
-                .parallel()
-                .forEach(client -> client.onPrice(ccyPair, rate));
+        executor.submit(new Task(listSubscribers, ccyPair, rate));
     }
 
     @Override

@@ -1,14 +1,9 @@
 package com.price.processor.starter;
 
-import com.price.processor.PriceThrottler;
+import com.price.processor.throttler.PriceThrottler;
 import com.price.processor.common.CurrencyPair;
 import com.price.processor.helper.RandomNumberHelper;
 import lombok.AllArgsConstructor;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.util.Random;
 
 @AllArgsConstructor
 public class ExchangeMock {
