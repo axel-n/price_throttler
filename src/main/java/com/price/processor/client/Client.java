@@ -13,7 +13,7 @@ public class Client implements PriceProcessor {
 
     @Override
     public void onPrice(String ccyPair, double rate) {
-        System.out.println("client id=." + clientId + "ccyPair=" + ccyPair + "rate=" + rate);
+        System.out.println("client id=" + clientId + ", ccyPair=" + ccyPair + ", rate=" + rate);
 
         try {
             Thread.sleep(timeForConsume);

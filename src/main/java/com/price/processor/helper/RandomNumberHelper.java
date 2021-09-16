@@ -16,7 +16,7 @@ public class RandomNumberHelper {
         return bigDecimal.doubleValue();
     }
 
-    public static int randomInt(int maxClientDelayMs) {
-        return random.nextInt(maxClientDelayMs);
+    public static int randomInt(int max) {
+        return random.nextInt(max);
     }
 }
