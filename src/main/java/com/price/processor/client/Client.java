@@ -7,11 +7,19 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class Client implements PriceProcessor {
 
+    private final int clientId;
     private final PriceThrottler priceThrottler;
+    private final int timeForConsume;
 
     @Override
     public void onPrice(String ccyPair, double rate) {
-        System.out.println("client. update. ccyPair=" + ccyPair + "rate=" + rate);
+        System.out.println("client id=." + clientId + "ccyPair=" + ccyPair + "rate=" + rate);
+
+        try {
+            Thread.sleep(timeForConsume);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void subscribe() {

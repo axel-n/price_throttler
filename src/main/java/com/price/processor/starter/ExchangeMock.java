@@ -15,6 +15,10 @@ public class ExchangeMock {
     private final PriceThrottler priceThrottler;
     private final RandomNumberHelper numberHelper = new RandomNumberHelper();
 
+    public void start() {
+        produce();
+    }
+
     private void produce() {
         new Thread(() -> {
 
@@ -26,18 +30,12 @@ public class ExchangeMock {
                 priceThrottler.onPrice(ccyPair, price);
 
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
 
-    }
-
-
-
-    public void start() {
-        produce();
     }
 }
