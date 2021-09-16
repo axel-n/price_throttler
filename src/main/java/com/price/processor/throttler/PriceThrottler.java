@@ -33,17 +33,20 @@ public class PriceThrottler implements PriceProcessor {
         logger.debug("ccyPair={}, ccyPair={}", pair, rate);
         pairsByLastRate.put(pair, rate);
 
-        listSubscribers.forEach(client -> {
-            int clientId = client.getClientId();
-            Thread prevThread = threads[client.getClientId()];
+        listSubscribers
+                .stream()
+                .parallel()
+                .forEach(client -> {
+                    int clientId = client.getClientId();
+                    Thread prevThread = threads[client.getClientId()];
 
-            if (prevThread == null || !prevThread.isAlive()) {
-                Thread thread = new Thread(() -> listSubscribers.get(0).onPrice(pair, pairsByLastRate.get(pair)));
+                    if (prevThread == null || !prevThread.isAlive()) {
+                        Thread thread = new Thread(() -> listSubscribers.get(0).onPrice(pair, pairsByLastRate.get(pair)));
 
-                threads[clientId] = thread;
-                thread.start();
-            }
-        });
+                        threads[clientId] = thread;
+                        thread.start();
+                    }
+                });
     }
 
     @Override
