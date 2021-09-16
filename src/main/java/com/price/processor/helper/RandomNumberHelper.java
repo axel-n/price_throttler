@@ -19,4 +19,8 @@ public class RandomNumberHelper {
     public static int randomInt(int max) {
         return random.nextInt(max);
     }
+
+    public static int randomInt(int minDelay, int maxClientDelay) {
+        return random.nextInt(maxClientDelay - minDelay) + minDelay;
+    }
 }

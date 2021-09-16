@@ -11,7 +11,7 @@ public class Main {
         PriceThrottler priceThrottler =  new PriceThrottler();
 
         ClientFactory clientFactory = new ClientFactory(priceThrottler);
-        List<Client> clients = clientFactory.generateClients(10, 5_000);
+        List<Client> clients = clientFactory.generateClients(10, 500,3_000);
         for (Client client : clients) {
             client.subscribe();
         }

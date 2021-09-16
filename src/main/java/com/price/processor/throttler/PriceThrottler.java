@@ -17,7 +17,7 @@ public class PriceThrottler implements PriceProcessor {
     private final Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private static final List<PriceProcessor> listSubscribers = new LinkedList<>();
-    private static final ExecutorService executor = Executors.newCachedThreadPool(); // TODO ok?
+    private static final ExecutorService executor = Executors.newCachedThreadPool(Executors.defaultThreadFactory()); // TODO ok?
     private static final Map<String, Double> pairsByLastRate = new HashMap<>();
 
     @Override
@@ -25,7 +25,7 @@ public class PriceThrottler implements PriceProcessor {
         logger.info("PriceThrottler. ccyPair={}, ccyPair={}", pair, rate);
         pairsByLastRate.put(pair, rate);
 
-        executor.submit(new Task(listSubscribers, pairsByLastRate, pair));
+        executor.execute(new Task(listSubscribers, pairsByLastRate, pair));
     }
 
     @Override

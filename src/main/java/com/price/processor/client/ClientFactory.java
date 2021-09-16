@@ -11,11 +11,13 @@ import java.util.List;
 public class ClientFactory {
     private final PriceThrottler priceThrottler;
 
-    public List<Client> generateClients(int count, int maxClientDelayMs) {
+    public List<Client> generateClients(int count, int minDelay, int maxClientDelay) {
         List<Client> clients = new ArrayList<>(count);
 
         for (int i = 0; i < count; i++) {
-            clients.add(new Client(i, priceThrottler, RandomNumberHelper.randomInt(maxClientDelayMs)));
+            int delay = RandomNumberHelper.randomInt(minDelay, maxClientDelay);
+
+            clients.add(new Client(i, priceThrottler, delay));
         }
         return clients;
     }
