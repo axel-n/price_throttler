@@ -17,17 +17,20 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-@AllArgsConstructor
 public class PriceThrottler implements PriceProcessor {
     private final Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    private static final List<Client> listSubscribers = new LinkedList<>();
-    private static final Thread[] threads = new Thread[200];
-    private static final Map<String, Double> pairsByLastRate = new HashMap<>();
+    private final List<Client> listSubscribers = new LinkedList<>();
+    private final Thread[] threads;
+    private final Map<String, Double> pairsByLastRate = new HashMap<>();
+
+    public PriceThrottler(int maxClients) {
+        threads = new Thread[maxClients];
+    }
 
     @Override
     public void onPrice(String pair, double rate) {
-        logger.info("ccyPair={}, ccyPair={}", pair, rate);
+        logger.debug("ccyPair={}, ccyPair={}", pair, rate);
         pairsByLastRate.put(pair, rate);
 
         listSubscribers.forEach(client -> {

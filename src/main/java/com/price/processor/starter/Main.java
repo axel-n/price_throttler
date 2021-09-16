@@ -8,15 +8,17 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        PriceThrottler priceThrottler =  new PriceThrottler();
+
+        int clientsSize = 200;
+        PriceThrottler priceThrottler =  new PriceThrottler(clientsSize);
 
         ClientFactory clientFactory = new ClientFactory(priceThrottler);
-        List<Client> clients = clientFactory.generateClients(1, 1_000,3_000);
+        List<Client> clients = clientFactory.generateClients(clientsSize, 1_000,3_000);
         for (Client client : clients) {
             client.subscribe();
         }
 
-        ExchangeMock exchange = new ExchangeMock(priceThrottler, 100);
+        ExchangeMock exchange = new ExchangeMock(priceThrottler, 10);
         exchange.start();
     }
 }

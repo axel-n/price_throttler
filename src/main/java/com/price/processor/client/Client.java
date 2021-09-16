@@ -22,7 +22,7 @@ public class Client implements PriceProcessor {
 
     @Override
     public void onPrice(String ccyPair, double rate) {
-        logger.info("client id={}, timeForConsume={}, pair={}, rate={}", clientId, timeForConsume, ccyPair, rate);
+        logger.debug("client id={}, timeForConsume={}, pair={}, rate={}", clientId, timeForConsume, ccyPair, rate);
 
         try {
             Thread.sleep(timeForConsume);
