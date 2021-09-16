@@ -9,7 +9,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-        int clientsSize = 200;
+        int clientsSize = 1_000;
         PriceThrottler priceThrottler =  new PriceThrottler(clientsSize);
 
         ClientFactory clientFactory = new ClientFactory(priceThrottler);
