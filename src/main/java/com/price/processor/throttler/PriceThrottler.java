@@ -17,12 +17,12 @@ public class PriceThrottler implements PriceProcessor {
     private final Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private static final List<PriceProcessor> listSubscribers = new LinkedList<>();
-    private static final ExecutorService executor = Executors.newCachedThreadPool(Executors.defaultThreadFactory()); // TODO ok?
+    private static final ExecutorService executor = Executors.newCachedThreadPool(Executors.defaultThreadFactory());
     private static final Map<String, Double> pairsByLastRate = new HashMap<>();
 
     @Override
     public void onPrice(String pair, double rate) {
-        logger.info("PriceThrottler. ccyPair={}, ccyPair={}", pair, rate);
+        logger.debug("ccyPair={}, ccyPair={}", pair, rate);
         pairsByLastRate.put(pair, rate);
 
         executor.execute(new Task(listSubscribers, pairsByLastRate, pair));
@@ -30,7 +30,7 @@ public class PriceThrottler implements PriceProcessor {
 
     @Override
     public void subscribe(PriceProcessor priceProcessor) {
-        logger.info("subscribe new client. priceProcessor=" + priceProcessor);
+        logger.info("subscribe new client. priceProcessor={}", priceProcessor);
         listSubscribers.add(priceProcessor);
     }
 

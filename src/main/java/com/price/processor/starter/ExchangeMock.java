@@ -7,13 +7,12 @@ import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static com.price.processor.common.CurrencyPair.EUR_RUB;
-
 @AllArgsConstructor
 public class ExchangeMock {
     private final Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private final PriceThrottler priceThrottler;
+    private final int delay;
     private final int countPairs = CurrencyPair.values().length;
 
     public void start() {
@@ -23,18 +22,23 @@ public class ExchangeMock {
     private void produce() {
         new Thread(() -> {
 
+            long counter = 0;
             while (true) {
-                String ccyPair = EUR_RUB.name(); // TODO restore old - randomPair()
+                String ccyPair = randomPair();
                 double price = RandomNumberHelper.getRandomDouble();
 
-                logger.info("\nnew price. ccyPair={}, price={}", ccyPair, price);
+                if (counter % 100 == 0) {
+                    logger.info("counter={}", counter);
+                }
+
                 priceThrottler.onPrice(ccyPair, price);
 
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(delay);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                counter++;
             }
         }).start();
 
