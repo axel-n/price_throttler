@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -15,13 +16,16 @@ import java.util.concurrent.Executors;
 public class PriceThrottler implements PriceProcessor {
     private final Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    private final List<PriceProcessor> listSubscribers = new LinkedList<>();
-    private final ExecutorService executor = Executors.newCachedThreadPool();
+    private static final List<PriceProcessor> listSubscribers = new LinkedList<>();
+    private static final ExecutorService executor = Executors.newCachedThreadPool(); // TODO ok?
+    private static final Map<String, Double> pairsByLastRate = new HashMap<>();
 
     @Override
-    public void onPrice(String ccyPair, double rate) {
-        logger.info("PriceThrottler. ccyPair={}, ccyPair={}", ccyPair, rate);
-        executor.submit(new Task(listSubscribers, ccyPair, rate));
+    public void onPrice(String pair, double rate) {
+        logger.info("PriceThrottler. ccyPair={}, ccyPair={}", pair, rate);
+        pairsByLastRate.put(pair, rate);
+
+        executor.submit(new Task(listSubscribers, pairsByLastRate, pair));
     }
 
     @Override
