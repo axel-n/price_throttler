@@ -36,13 +36,14 @@ public class PriceThrottler implements PriceProcessor {
         pairsByLastRate.put(pair, rate);
 
         listSubscribers
-                .stream()
                 .forEach(client -> {
                     int clientId = client.getClientId();
                     Future<Void> prevFuture = futures.get(clientId);
 
                     if (prevFuture == null || prevFuture.isDone()) {
-                        Future<Void> future = CompletableFuture.runAsync(() -> listSubscribers.get(0).onPrice(pair, pairsByLastRate.get(pair)));
+                        Future<Void> future = CompletableFuture.runAsync(() ->
+                                listSubscribers.get(0).onPrice(pair, pairsByLastRate.get(pair)));
+
                         logger.debug("send message async for clientId={}", clientId);
 
                         futures.put(clientId, future);
