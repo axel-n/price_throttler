@@ -7,11 +7,11 @@ import com.price.processor.client.ClientFactory;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         PriceThrottler priceThrottler =  new PriceThrottler();
 
         ClientFactory clientFactory = new ClientFactory(priceThrottler);
-        List<Client> clients = clientFactory.generateClients(10);
+        List<Client> clients = clientFactory.generateClients(10, 5_000);
         for (Client client : clients) {
             client.subscribe();
         }

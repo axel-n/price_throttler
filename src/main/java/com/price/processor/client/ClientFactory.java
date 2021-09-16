@@ -9,15 +9,13 @@ import java.util.List;
 
 @AllArgsConstructor
 public class ClientFactory {
-
     private final PriceThrottler priceThrottler;
-    private static final int MAX_CLIENT_DELAY_MS = 1000;
 
-    public List<Client> generateClients(int count) {
+    public List<Client> generateClients(int count, int maxClientDelayMs) {
         List<Client> clients = new ArrayList<>(count);
 
         for (int i = 0; i < count; i++) {
-            clients.add(new Client(i, priceThrottler, RandomNumberHelper.randomInt(MAX_CLIENT_DELAY_MS)));
+            clients.add(new Client(i, priceThrottler, RandomNumberHelper.randomInt(maxClientDelayMs)));
         }
         return clients;
     }
