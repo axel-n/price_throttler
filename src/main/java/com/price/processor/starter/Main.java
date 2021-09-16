@@ -11,12 +11,12 @@ public class Main {
         PriceThrottler priceThrottler =  new PriceThrottler();
 
         ClientFactory clientFactory = new ClientFactory(priceThrottler);
-        List<Client> clients = clientFactory.generateClients(200, 2,3_000);
+        List<Client> clients = clientFactory.generateClients(1, 1_000,3_000);
         for (Client client : clients) {
             client.subscribe();
         }
 
-        ExchangeMock exchange = new ExchangeMock(priceThrottler, 10);
+        ExchangeMock exchange = new ExchangeMock(priceThrottler, 100);
         exchange.start();
     }
 }

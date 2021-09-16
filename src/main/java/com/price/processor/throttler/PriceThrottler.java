@@ -1,5 +1,6 @@
 package com.price.processor.throttler;
 
+import com.price.processor.client.Client;
 import com.price.processor.common.PriceProcessor;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -11,32 +12,46 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @AllArgsConstructor
 public class PriceThrottler implements PriceProcessor {
     private final Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    private static final List<PriceProcessor> listSubscribers = new LinkedList<>();
-    private static final ExecutorService executor = Executors.newCachedThreadPool(Executors.defaultThreadFactory());
+    private static final List<Client> listSubscribers = new LinkedList<>();
+    private static final Thread[] threads = new Thread[200];
     private static final Map<String, Double> pairsByLastRate = new HashMap<>();
 
     @Override
     public void onPrice(String pair, double rate) {
-        logger.debug("ccyPair={}, ccyPair={}", pair, rate);
+        logger.info("ccyPair={}, ccyPair={}", pair, rate);
         pairsByLastRate.put(pair, rate);
 
-        executor.execute(new Task(listSubscribers, pairsByLastRate, pair));
+        listSubscribers.forEach(client -> {
+            int clientId = client.getClientId();
+            Thread prevThread = threads[client.getClientId()];
+
+            if (prevThread == null || !prevThread.isAlive()) {
+                Thread thread = new Thread(() -> listSubscribers.get(0).onPrice(pair, pairsByLastRate.get(pair)));
+
+                threads[clientId] = thread;
+                thread.start();
+            }
+        });
     }
 
     @Override
     public void subscribe(PriceProcessor priceProcessor) {
         logger.info("subscribe new client. priceProcessor={}", priceProcessor);
-        listSubscribers.add(priceProcessor);
+        listSubscribers.add((Client) priceProcessor);
     }
 
     @Override
     public void unsubscribe(PriceProcessor priceProcessor) {
         logger.info("unsubscribe client. priceProcessor={}", priceProcessor);
-        listSubscribers.remove(priceProcessor);
+        listSubscribers.remove((Client) priceProcessor);
     }
 }

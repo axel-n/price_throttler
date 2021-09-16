@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static com.price.processor.common.CurrencyPair.EUR_USD;
+
 @AllArgsConstructor
 public class ExchangeMock {
     private final Logger logger = LogManager.getLogger(this.getClass().getName());
@@ -45,7 +47,8 @@ public class ExchangeMock {
     }
 
     private String randomPair() {
-        int indexPair = RandomNumberHelper.randomInt(countPairs - 1);
-        return CurrencyPair.values()[indexPair].name();
+//        int indexPair = RandomNumberHelper.randomInt(countPairs - 1);
+//        return CurrencyPair.values()[indexPair].name();
+        return EUR_USD.name();
     }
 }
