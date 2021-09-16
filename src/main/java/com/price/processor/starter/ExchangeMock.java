@@ -4,9 +4,12 @@ import com.price.processor.throttler.PriceThrottler;
 import com.price.processor.common.CurrencyPair;
 import com.price.processor.helper.RandomNumberHelper;
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @AllArgsConstructor
 public class ExchangeMock {
+    private final Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private final PriceThrottler priceThrottler;
     private final int countPairs = CurrencyPair.values().length;
@@ -22,7 +25,7 @@ public class ExchangeMock {
                 String ccyPair = randomPair();
                 double price = RandomNumberHelper.getRandomDouble();
 
-                System.out.println("new price. ccyPair=" + ccyPair + ", price=" + price);
+                logger.info("new price. ccyPair={}, price={}", ccyPair, price);
                 priceThrottler.onPrice(ccyPair, price);
 
                 try {

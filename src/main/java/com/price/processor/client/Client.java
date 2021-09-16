@@ -3,9 +3,12 @@ package com.price.processor.client;
 import com.price.processor.common.PriceProcessor;
 import com.price.processor.throttler.PriceThrottler;
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @AllArgsConstructor
 public class Client implements PriceProcessor {
+    private final Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private final int clientId;
     private final PriceThrottler priceThrottler;
@@ -13,7 +16,7 @@ public class Client implements PriceProcessor {
 
     @Override
     public void onPrice(String ccyPair, double rate) {
-        System.out.println("client id=" + clientId + ", ccyPair=" + ccyPair + ", rate=" + rate);
+        logger.info("client id={}, pair={}, rate={}", clientId, ccyPair, rate);
 
         try {
             Thread.sleep(timeForConsume);
