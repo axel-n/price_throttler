@@ -10,9 +10,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -21,11 +23,11 @@ public class PriceThrottler implements PriceProcessor {
     private final Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private final List<Client> listSubscribers = new LinkedList<>();
-    private final Thread[] threads;
+    private final Map<Integer, Future<Void>> futures; // monitor sent or not price
     private final Map<String, Double> pairsByLastRate = new HashMap<>();
 
     public PriceThrottler(int maxClients) {
-        threads = new Thread[maxClients];
+        futures = new HashMap<>(maxClients);
     }
 
     @Override
@@ -35,18 +37,19 @@ public class PriceThrottler implements PriceProcessor {
 
         listSubscribers
                 .stream()
-                .parallel()
                 .forEach(client -> {
                     int clientId = client.getClientId();
-                    Thread prevThread = threads[client.getClientId()];
+                    Future<Void> prevFuture = futures.get(clientId);
 
-                    if (prevThread == null || !prevThread.isAlive()) {
-                        Thread thread = new Thread(() -> listSubscribers.get(0).onPrice(pair, pairsByLastRate.get(pair)));
+                    if (prevFuture == null || prevFuture.isDone()) {
+                        Future<Void> future = CompletableFuture.runAsync(() -> listSubscribers.get(0).onPrice(pair, pairsByLastRate.get(pair)));
+                        logger.debug("send message async for clientId={}", clientId);
 
-                        threads[clientId] = thread;
-                        thread.start();
+                        futures.put(clientId, future);
                     }
                 });
+
+
     }
 
     @Override

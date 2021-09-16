@@ -9,11 +9,11 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-        int clientsSize = 200;
+        int clientsSize = 30;
         PriceThrottler priceThrottler =  new PriceThrottler(clientsSize);
 
         ClientFactory clientFactory = new ClientFactory(priceThrottler);
-        List<Client> clients = clientFactory.generateClients(clientsSize, 10,30_000);
+        List<Client> clients = clientFactory.generateClients(clientsSize, 10,3_000);
         for (Client client : clients) {
             client.subscribe();
         }
